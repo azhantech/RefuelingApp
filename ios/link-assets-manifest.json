@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/index.js",
+      "sha1": "e0a68c122b0fcdd3c987fdd12d88187e6eea85cc"
+    },
+    {
+      "path": "src/assets/fonts/OpenSans-Bold.ttf",
+      "sha1": "b4dc84e68228806b968ebe82c7c5b5af77a06d89"
+    },
+    {
+      "path": "src/assets/fonts/OpenSans-Regular.ttf",
+      "sha1": "f8c1c09e84c4df19cf1a7a813b26898936b24be6"
+    },
+    {
+      "path": "src/assets/fonts/OpenSans-SemiBold.ttf",
+      "sha1": "5d26b7519db1e47f30306ecff662e6533f603187"
+    }
+  ]
+}
