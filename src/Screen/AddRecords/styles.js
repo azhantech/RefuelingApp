@@ -8,6 +8,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  container: {
+    height: vh * 50,
+  },
+  errorMessage: {
+    color: colors.red,
+  },
   odometerContainer: {
     height: vh * 12,
   },
@@ -51,6 +57,10 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: vw * 3,
     color: colors.textColor,
+  },
+  buttonContainer: {
+    height: vh * 15,
+    justifyContent: 'center',
   },
 });
 export default styles;

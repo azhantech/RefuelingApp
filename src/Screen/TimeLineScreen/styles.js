@@ -79,8 +79,7 @@ const styles = StyleSheet.create({
   },
   distanceContainer: {
     flexDirection: 'row',
-    width: vw * 18,
-    justifyContent: 'space-between',
+
     alignItems: 'center',
     height: vh * 3,
   },
@@ -92,6 +91,7 @@ const styles = StyleSheet.create({
   distanceTxt: {
     color: colors.grey,
     fontSize: vw * 3,
+    marginLeft: vw * 2,
   },
   headerTxt: {
     color: colors.floatingbtnColor,

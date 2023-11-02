@@ -6,7 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import moment from 'moment';
+import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import {vh} from '../../Utils/dimensions';
 import {icons} from '../../Assets/Images';
@@ -14,7 +15,93 @@ import TextHeader from '../../Component/TextHeader';
 import {colors} from '../../Utils/appTheme';
 import OpenSansRegular from '../../Component/Texts/OpenSansRegular';
 import RowTextContainer from '../../Component/RowTextContainer';
+import {useSelector} from 'react-redux';
 export default function HomeScreen(props) {
+  const data = useSelector(state => state?.AddRefuelingRecords?.refuelRecords);
+  const [avgFuel, setAvgFuel] = useState('');
+  const [lastFuel, setLastFuel] = useState('');
+  const [lastPrice, setLastPrice] = useState('');
+  const [prevMonthCost, setPrevMonthCost] = useState('');
+  const [currentMonthCost, setcurrentMonthCost] = useState('');
+
+  const getData = () => {
+    if (data?.length) {
+      calculateAverageFuel(data);
+      calculateLastFuel(data);
+      calculateLastFuelPrice(data);
+      calculatecurrenAndLastMonthFuel(data);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, [data?.length]);
+
+  const calculateAverageFuel = records => {
+    const totalFuel = records.reduce(
+      (sum, record) => sum + parseFloat(record.gasAmount),
+      0,
+    );
+    setAvgFuel(totalFuel / records.length);
+    console.log('total Fuel ====>');
+  };
+
+  const calculateLastFuel = records => {
+    const lastRecord = records[records.length - 1];
+    setLastFuel(parseFloat(lastRecord.gasAmount));
+  };
+
+  const calculateLastFuelPrice = records => {
+    const lastRecord = records[records.length - 1];
+    setLastPrice(
+      (
+        parseFloat(lastRecord.totalCost) / parseFloat(lastRecord.gasAmount)
+      ).toFixed(2),
+    );
+
+    // .toFixed(2);
+  };
+  const calculatecurrenAndLastMonthFuel = groupedData => {
+    const calculateTotalFuelCost = records => {
+      return records.reduce(
+        (total, record) => total + parseFloat(record.totalCost),
+        0,
+      );
+    };
+
+    // Get the current date
+    const today = moment();
+
+    // Calculate the start of the current month and the previous month
+    const startOfCurrentMonth = today.startOf('month');
+    const startOfPreviousMonth = startOfCurrentMonth.subtract(1, 'month');
+
+    // Calculate fuel cost for the current month
+    const currentMonthData = groupedData.find(group => {
+      const groupDate = moment(group.title, 'YYYY-MM');
+      return groupDate.isSame(startOfCurrentMonth, 'month');
+    });
+
+    // Calculate fuel cost for the previous month
+    const previousMonthData = groupedData.find(group => {
+      const groupDate = moment(group.title, 'YYYY-MM');
+      return groupDate.isSame(startOfPreviousMonth, 'month');
+    });
+
+    if (currentMonthData) {
+      const currentMonthFuelCost = calculateTotalFuelCost(
+        currentMonthData.data,
+      );
+      setcurrentMonthCost(currentMonthFuelCost);
+    }
+
+    if (previousMonthData) {
+      const previousMonthFuelCost = calculateTotalFuelCost(
+        previousMonthData.data,
+      );
+      // console.log(`Previous Month Fuel Cost: ${previousMonthFuelCost}`);
+      setPrevMonthCost(previousMonthFuelCost);
+    }
+  };
   return (
     <View style={{flex: 1}}>
       <ScrollView
@@ -27,22 +114,24 @@ export default function HomeScreen(props) {
               icon={icons.chartGraph}
               text={'Average fuel consumption'}
               unit={'ml/l'}
-              value={'6.458'}
+              value={avgFuel != '' ? avgFuel : 0}
             />
             <RowTextContainer
               icon={icons.chartGraph}
               text={'Last fuel Consumption'}
               unit={'ml/l'}
-              value={'6.458'}
+              value={lastFuel != '' ? lastFuel : 0}
             />
             <RowTextContainer
               icon={icons.chartGraph}
               text={'Last fuel price'}
               unit={'ml/l'}
-              value={'6.458'}
+              value={lastPrice != '' ? lastPrice : 0}
             />
             <View style={styles.dateContainer}>
-              <OpenSansRegular>2021-09-24 7 days ago</OpenSansRegular>
+              <OpenSansRegular>
+                {moment().format('DD MMM YYYY')}
+              </OpenSansRegular>
             </View>
           </View>
         </View>
@@ -56,7 +145,7 @@ export default function HomeScreen(props) {
             <RowTextContainer
               icon={icons.gasPump}
               text={'Gas'}
-              value={'$ 0.00'}
+              value={`$ ${currentMonthCost != '' ? currentMonthCost : '0.00'}`}
             />
             <RowTextContainer
               icon={icons.dollar}
@@ -70,7 +159,7 @@ export default function HomeScreen(props) {
               icon={icons.gasPump}
               text={'Last fuel price'}
               unit={'ml/l'}
-              value={'6.458'}
+              value={`$ ${prevMonthCost != '' ? prevMonthCost : '0.00'}`}
             />
             <RowTextContainer
               icon={icons.dollar}

@@ -7,6 +7,7 @@ export const colors = {
   blue: '#037FFF',
   grey: '#707070',
   floatingbtnColor: '#87CEEB',
+  red: '#CA0420',
 };
 export const linearColors = {
   black: ['rgba(29,29,29,0.65)', 'rgba(55,55,55,0)'],
